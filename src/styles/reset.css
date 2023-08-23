@@ -1,0 +1,90 @@
+/* Reset.css */
+/* 웹 브라우저마다 기본 스타일을 초기화합니다. */
+
+/* 요소의 여백과 패딩을 초기화합니다. */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+dl,
+dt,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+/* 목록 스타일을 제거합니다. */
+ul,
+ol {
+  list-style: none;
+}
+
+/* 링크의 기본 스타일을 제거합니다. */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 텍스트 스타일을 초기화합니다. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 1em;
+  font-weight: normal;
+}
+
+/* 인라인 요소의 기본 스타일을 제거합니다. */
+strong,
+em,
+abbr,
+code,
+span {
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 이미지의 경계선을 제거합니다. */
+img {
+  border: 0;
+}
+
+/* 입력 요소의 기본 스타일을 제거합니다. */
+input,
+textarea,
+select,
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* 버튼 스타일을 초기화합니다. */
+button {
+  background: none;
+  cursor: pointer;
+}
+
+/* 폼 요소의 기본 스타일을 초기화합니다. */
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* 테이블 관련 스타일을 초기화합니다. */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
