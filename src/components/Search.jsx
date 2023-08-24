@@ -1,16 +1,38 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 function Search(props) {
+  const [search, setSearch] = useState("");
+  function searchChangeHandler(e) {
+    setSearch(e.target.value);
+  }
+  const navigate = useNavigate();
+  function findSubmit() {
+    navigate(`find/${search}`);
+  }
+  function searchKeyDownHandler(e) {
+    if (e.key === "Enter") {
+      findSubmit();
+    }
+  }
   return (
     <SearchContent>
       <SearchSelect name="" id="">
         <option value="">KR</option>
       </SearchSelect>
-      <SearchInput type="text" placeholder={props.placeholder} />
+      <SearchInput
+        type="text"
+        placeholder={props.placeholder}
+        onChange={searchChangeHandler}
+        onKeyDown={searchKeyDownHandler}
+        value={search}
+      />
       <FontAwesomeIcon
         icon={faMagnifyingGlass}
         style={{ width: "80px", fontSize: "20px", cursor: "pointer" }}
+        onClick={findSubmit}
       />
     </SearchContent>
   );

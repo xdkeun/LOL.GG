@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import Loading from "../components/Loading";
 import Search from "../components/Search";
 import styled from "styled-components";
 function IndexPage() {
@@ -14,6 +15,6 @@ function IndexPage() {
 const IndexSearch = styled.div`
   display: flex;
   justify-content: center;
-  margin:50px 0;
+  margin: 50px 0;
 `;
 export default IndexPage;

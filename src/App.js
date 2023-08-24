@@ -3,6 +3,7 @@ import "./styles/reset.css";
 import "./styles/fonts.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
+import FindPage from "./pages/FindPage";
 const theme = {
   colors: {
     background: "#318eef",
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<IndexPage />} />
+          <Route path="/find/:param" element={<FindPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
