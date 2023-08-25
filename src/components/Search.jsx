@@ -10,7 +10,7 @@ function Search(props) {
   }
   const navigate = useNavigate();
   function findSubmit() {
-    navigate(`find/${search}`);
+    navigate(`/find/${search}`);
   }
   function searchKeyDownHandler(e) {
     if (e.key === "Enter") {
@@ -45,7 +45,9 @@ const SearchContent = styled.div`
   gap: 10px;
   border: 1px solid black;
   border-radius: 5px;
-  padding: 5px;
+  box-sizing: border-box;
+  padding-top: 2px;
+  padding-left: 5px;
 `;
 const SearchSelect = styled.select`
   width: 80px;

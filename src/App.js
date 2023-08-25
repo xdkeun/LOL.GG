@@ -1,6 +1,7 @@
 import IndexPage from "./pages/IndexPage";
 import "./styles/reset.css";
 import "./styles/fonts.css";
+import "./styles/root.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import FindPage from "./pages/FindPage";
