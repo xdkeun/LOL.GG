@@ -14,6 +14,7 @@ import gold from "../assets/tiers/gold.png";
 import silver from "../assets/tiers/silver.png";
 import bronze from "../assets/tiers/bronze.png";
 import iron from "../assets/tiers/iron.png";
+import unranked from "../assets/tiers/unranked.png";
 const tierImages = {
   challenger: challenger,
   grandmaster: grandmaster,
@@ -25,6 +26,7 @@ const tierImages = {
   silver: silver,
   bronze: bronze,
   iron: iron,
+  unranked: unranked,
 };
 
 function Find() {
@@ -33,14 +35,18 @@ function Find() {
   const [id, setId] = useState("");
   const [accountId, setAccountId] = useState("");
   const [puuid, setPuuid] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [tier, setTier] = useState("");
-  const [rank, setRank] = useState("");
-  const [name, setName] = useState("");
-  const [wins, setWins] = useState("");
-  const [losses, setLosses] = useState("");
   const [level, setLevel] = useState("");
-  const [point, setPoint] = useState("");
+  const [name, setName] = useState("");
+  const [soloRankTier, setSoloRankTier] = useState("");
+  const [soloRank, setSoloRank] = useState("");
+  const [soloRankWins, setSoloRankWins] = useState("");
+  const [soloRankLosses, setSoloRankLosses] = useState("");
+  const [soloRankPoint, setSoloRankPoint] = useState("");
+  const [freeRankTier, setFreeRankTier] = useState("");
+  const [freeRank, setFreeRank] = useState("");
+  const [freeRankWins, setFreeRankWins] = useState("");
+  const [freeRankLosses, setFreeRankLosses] = useState("");
+  const [freeRankPoint, setFreeRankPoint] = useState("");
   useEffect(() => {
     //summonerv4Api(id, accountId, puuid)
     axios
@@ -72,15 +78,25 @@ function Find() {
         `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${API_KEY}`
       )
       .then(function (response) {
-        console.log(response.data[0].queueType)
         // 솔로랭크는 RANKED_SOLO_5x5
         // 자유랭크는 RANKED_FLEX_SR
-        setTier(response.data[0].tier);
-        setRank(response.data[0].rank);
+
         setName(response.data[0].summonerName);
-        setWins(response.data[0].wins);
-        setLosses(response.data[0].losses);
-        setPoint(response.data[0].leaguePoints);
+        response.data.forEach((data) => {
+          if (data.queueType === "RANKED_SOLO_5x5") {
+            setSoloRankTier(data.tier);
+            setSoloRank(data.rank);
+            setSoloRankWins(data.wins);
+            setSoloRankLosses(data.losses);
+            setSoloRankPoint(data.leaguePoints);
+          } else if (data.queueType === "RANKED_FLEX_SR") {
+            setFreeRankTier(data.tier);
+            setFreeRank(data.rank);
+            setFreeRankWins(data.wins);
+            setFreeRankLosses(data.losses);
+            setFreeRankPoint(data.leaguePoints);
+          }
+        });
       })
       .catch(function (error) {
         console.log(error);
@@ -133,42 +149,56 @@ function Find() {
         <SummonerTierArticle>
           <RankType>솔로랭크</RankType>
           <RankInfo>
-            <TierImg src={tierImages[tier.toLowerCase()]} alt="티어 사진" />
+            <TierImg
+              src={tierImages[soloRankTier.toLowerCase()]}
+              alt="티어 사진"
+            />
             <RankTierLP>
               <RankTier>
-                {tier} {rank}
+                {soloRankTier} {soloRank}
               </RankTier>
-              <RankLP>{point} LP</RankLP>
+              <RankLP>{soloRankPoint} LP</RankLP>
             </RankTierLP>
             <RankWinsLossesInfo>
               <WinsLosses>
-                {wins}승 {losses}패
+                {soloRankWins}승 {soloRankLosses}패
               </WinsLosses>
 
               <WinningPercent>
-                승률 {Math.round((wins / (wins + losses)) * 100)}%
+                승률{" "}
+                {Math.round(
+                  (soloRankWins / (soloRankWins + soloRankLosses)) * 100
+                )}
+                %
               </WinningPercent>
             </RankWinsLossesInfo>
           </RankInfo>
         </SummonerTierArticle>
 
         <SummonerTierArticle>
-          <RankType>솔로랭크</RankType>
+          <RankType>자유랭크</RankType>
           <RankInfo>
-            <TierImg src={tierImages[tier.toLowerCase()]} alt="티어 사진" />
+            <TierImg
+              src={tierImages[freeRankTier.toLowerCase()]}
+              alt="티어 사진"
+            />
             <RankTierLP>
               <RankTier>
-                {tier} {rank}
+                {freeRankTier} {freeRank}
               </RankTier>
-              <RankLP>{point} LP</RankLP>
+              <RankLP>{freeRankPoint} LP</RankLP>
             </RankTierLP>
             <RankWinsLossesInfo>
               <WinsLosses>
-                {wins}승 {losses}패
+                {freeRankWins}승 {freeRankLosses}패
               </WinsLosses>
 
               <WinningPercent>
-                승률 {Math.round((wins / (wins + losses)) * 100)}%
+                승률{" "}
+                {Math.round(
+                  (freeRankWins / (freeRankWins + freeRankLosses)) * 100
+                )}
+                %
               </WinningPercent>
             </RankWinsLossesInfo>
           </RankInfo>
