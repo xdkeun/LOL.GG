@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react";
 import Search from "../components/Search";
 import SummonerInfo from "../components/SummonerInfo";
 import SummonerTier from "../components/SummonerTier";
+import Loading from "../components/Loading";
+import GameRecord from "../components/GameRecord";
 
 function FindPage() {
   const { param } = useParams();
@@ -86,19 +88,34 @@ function FindPage() {
       <Header />
       <div style={{ padding: "20px" }}>
         <Search />
-        <SummonerInfo name={name} level={level} icon={icon} />
-        <SummonerTier
-          soloRankTier={soloRankTier}
-          soloRank={soloRank}
-          soloRankPoint={soloRankPoint}
-          soloRankWins={soloRankWins}
-          soloRankLosses={soloRankLosses}
-          freeRankTier={freeRankTier}
-          freeRank={freeRank}
-          freeRankPoint={freeRankPoint}
-          freeRankWins={freeRankWins}
-          freeRankLosses={freeRankLosses}
-        />
+        {name === "" ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "50px",
+            }}
+          >
+            <Loading />
+          </div>
+        ) : (
+          <>
+            <SummonerInfo name={name} level={level} icon={icon} />
+            <SummonerTier
+              soloRankTier={soloRankTier}
+              soloRank={soloRank}
+              soloRankPoint={soloRankPoint}
+              soloRankWins={soloRankWins}
+              soloRankLosses={soloRankLosses}
+              freeRankTier={freeRankTier}
+              freeRank={freeRank}
+              freeRankPoint={freeRankPoint}
+              freeRankWins={freeRankWins}
+              freeRankLosses={freeRankLosses}
+            />
+            <GameRecord />
+          </>
+        )}
       </div>
     </div>
   );

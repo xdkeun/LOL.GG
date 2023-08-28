@@ -2,7 +2,7 @@ import styled from "styled-components";
 function importAll(r) {
   let images = {};
   r.keys().forEach((item, index) => {
-    images[item.replace('./', '')] = r(item);
+    images[item.replace("./", "")] = r(item);
   });
   return images;
 }
@@ -10,7 +10,8 @@ const iconImages = importAll(
   require.context("../assets/summonerIcons", false, /\.(png|jpe?g|svg)$/)
 );
 function SummonerInfo({ name, level, icon }) {
-  const selectedIcon = iconImages[`${icon}.png`];
+  //selectedIcon이 없을 경우 29.png(default image)가 표시되도록 구현
+  const selectedIcon = iconImages[`${icon}.png`] || iconImages["29.png"];
   return (
     <SummonerInfoContent>
       <div style={{ position: "relative" }}>
