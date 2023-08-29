@@ -1,135 +1,157 @@
 import styled from "styled-components";
-import champion from "../assets/champions/LeeSin.png";
 import spell from "../assets/summonerSpells/4.png";
 import item from "../assets/items/1018.png";
 import rune from "../assets/runes/8000.webp";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import downBlueIcon from "../assets/icon/icon-arrow-down-blue.svg";
 import downRedIcon from "../assets/icon/icon-arrow-down-red.svg";
-function GameRecord() {
+import champions from "../apis/champions";
+function importAll(r) {
+  let images = {};
+  r.keys().forEach((item, index) => {
+    images[item.replace("./", "")] = r(item);
+  });
+  return images;
+}
+const championImages = importAll(
+  require.context("../assets/champions", false, /\.(png|jpe?g|svg)$/)
+);
+function GameRecord({ puuid, API_KEY }) {
+  const [matches, setMatches] = useState([]); // matches 배열로 응답을 저장
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=3&api_key=${API_KEY}`
+      )
+      .then(function (response) {
+        const matchIds = response.data;
+        const matchPromises = matchIds.map((matchId) =>
+          axios.get(
+            `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${API_KEY}`
+          )
+        );
+
+        Promise.all(matchPromises)
+          .then((responses) => {
+            // 각각의 응답을 matches 배열에 저장
+            setMatches(responses.map((response) => response.data));
+          })
+          .catch(function (error) {
+            alert(error);
+          });
+      })
+      .catch(function (error) {
+        alert(error);
+      });
+  }, [puuid, API_KEY]);
   return (
     <GameRecordContent>
-      <GameRecordArticle>
-        <GameRecordType>
-          <p style={{ fontWeight: "500", color: "black" }}>솔랭</p>
-          <p
-            style={{
-              paddingBottom: "5px",
-              borderBottom: "0.5px solid rgba(0,0,0,0.7)",
-            }}
-          >
-            하루 전
-          </p>
-          <p>패배</p>
-          <p>15분 57초</p>
-        </GameRecordType>
-
-        <GameRecordInfo>
-          <GameRecordInfoTop>
-            <GameRecordInfoImgWrapper>
-              <GameRecordInfoImg src={champion} alt="챔피언 사진" />
-              <GameRecordInfoLevel>18</GameRecordInfoLevel>
-            </GameRecordInfoImgWrapper>
-            <GameRecordInfoRuneSpellWrapper>
-              <GameRecordInfoRuneSpellImg src={spell} alt="" />
-              <GameRecordInfoRuneSpellImg src={spell} alt="" />
-            </GameRecordInfoRuneSpellWrapper>
-            <GameRecordInfoRuneSpellWrapper>
-              <GameRecordInfoRuneSpellImg src={rune} alt="" />
-              <GameRecordInfoRuneSpellImg src={rune} alt="" />
-            </GameRecordInfoRuneSpellWrapper>
-            <GameRecordInfoKDAWrapper>
-              <GameRecordInfoKDA>9/9/13</GameRecordInfoKDA>
-              <GameRecordInfoRatio>평점 2.44</GameRecordInfoRatio>
-            </GameRecordInfoKDAWrapper>
-            <GameRecordInfoStatsWrapper>
-              <KillRate>킬관여 50%</KillRate>
-              <InfoStats>제어와드 2</InfoStats>
-              <InfoStats>CS 250 (7.8)</InfoStats>
-              <InfoStats>Platinum 2</InfoStats>
-            </GameRecordInfoStatsWrapper>
-          </GameRecordInfoTop>
-          <GameRecordInfoBottom>
-            <GameRecordInfoItemImg src={item} alt="" />
-            <GameRecordInfoItemImg src={item} alt="" />
-            <GameRecordInfoItemImg src={item} alt="" />
-            <GameRecordInfoItemImg src={item} alt="" />
-            <GameRecordInfoItemImg src={item} alt="" />
-            <GameRecordInfoItemImg src={item} alt="" />
+      {matches.map((match, index) => (
+        <GameRecordArticle key={index}>
+          <GameRecordType>
+            <p style={{ fontWeight: "500", color: "black" }}>솔랭</p>
             <p
               style={{
-                backgroundColor: "#e84057",
-                color: "white",
-                borderRadius: "25px",
-                fontSize: "12px",
-                padding: "4px 8px",
-                margin: "0 4px",
+                paddingBottom: "5px",
+                borderBottom: "0.5px solid rgba(0,0,0,0.7)",
               }}
             >
-              트리플킬
+              하루 전
             </p>
-          </GameRecordInfoBottom>
-        </GameRecordInfo>
+            <p>패배</p>
+            <p>15분 57초</p>
+          </GameRecordType>
 
-        <GameRecordParticipants>
-          <GameRecordTeams>
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush111111</TeamName>
-            </TeamInfo>
+          <GameRecordInfo>
+            <GameRecordInfoTop>
+              <GameRecordInfoImgWrapper>
+                <GameRecordInfoImg src="" alt="챔피언 사진" />
+                <GameRecordInfoLevel>18</GameRecordInfoLevel>
+              </GameRecordInfoImgWrapper>
+              <GameRecordInfoRuneSpellWrapper>
+                <GameRecordInfoRuneSpellImg src={spell} alt="" />
+                <GameRecordInfoRuneSpellImg src={spell} alt="" />
+              </GameRecordInfoRuneSpellWrapper>
+              <GameRecordInfoRuneSpellWrapper>
+                <GameRecordInfoRuneSpellImg src={rune} alt="" />
+                <GameRecordInfoRuneSpellImg src={rune} alt="" />
+              </GameRecordInfoRuneSpellWrapper>
+              <GameRecordInfoKDAWrapper>
+                <GameRecordInfoKDA>9/9/13</GameRecordInfoKDA>
+                <GameRecordInfoRatio>평점 2.44</GameRecordInfoRatio>
+              </GameRecordInfoKDAWrapper>
+              <GameRecordInfoStatsWrapper>
+                <KillRate>킬관여 50%</KillRate>
+                <InfoStats>제어와드 2</InfoStats>
+                <InfoStats>CS 250 (7.8)</InfoStats>
+                <InfoStats>Platinum 2</InfoStats>
+              </GameRecordInfoStatsWrapper>
+            </GameRecordInfoTop>
+            <GameRecordInfoBottom>
+              <GameRecordInfoItemImg src={item} alt="" />
+              <GameRecordInfoItemImg src={item} alt="" />
+              <GameRecordInfoItemImg src={item} alt="" />
+              <GameRecordInfoItemImg src={item} alt="" />
+              <GameRecordInfoItemImg src={item} alt="" />
+              <GameRecordInfoItemImg src={item} alt="" />
+              <p
+                style={{
+                  backgroundColor: "#e84057",
+                  color: "white",
+                  borderRadius: "25px",
+                  fontSize: "12px",
+                  padding: "4px 8px",
+                  margin: "0 4px",
+                }}
+              >
+                트리플킬
+              </p>
+            </GameRecordInfoBottom>
+          </GameRecordInfo>
 
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-          </GameRecordTeams>
-
-          <GameRecordTeams>
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-
-            <TeamInfo>
-              <TeamImg src={champion} alt="" />
-              <TeamName>Hide on bush</TeamName>
-            </TeamInfo>
-          </GameRecordTeams>
-        </GameRecordParticipants>
-        <GameRecordDetail>
-          <img src={downRedIcon} alt="" />
-        </GameRecordDetail>
-      </GameRecordArticle>
-      
+          <GameRecordParticipants>
+            <GameRecordTeams>
+              {match.info.participants.map((participant) =>
+                participant.teamId === 100 ? (
+                  <TeamInfo key={participant.summonerId}>
+                    <TeamImg
+                      src={
+                        championImages[
+                          `${champions[participant.championId]}.png`
+                        ]
+                      }
+                      alt={participant.championName}
+                    />
+                    <TeamName>{participant.summonerName}</TeamName>
+                  </TeamInfo>
+                ) : null
+              )}
+            </GameRecordTeams>
+            <GameRecordTeams>
+              {match.info.participants.map((participant) =>
+                participant.teamId === 200 ? (
+                  <TeamInfo key={participant.summonerId}>
+                    <TeamImg
+                      src={
+                        championImages[
+                          `${champions[participant.championId]}.png`
+                        ]
+                      }
+                      alt={participant.championName}
+                    />
+                    <TeamName>{participant.summonerName}</TeamName>
+                  </TeamInfo>
+                ) : null
+              )}
+            </GameRecordTeams>
+          </GameRecordParticipants>
+          <GameRecordDetail>
+            <img src={downRedIcon} alt="" />
+          </GameRecordDetail>
+        </GameRecordArticle>
+      ))}
     </GameRecordContent>
   );
 }

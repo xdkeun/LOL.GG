@@ -113,7 +113,7 @@ function FindPage() {
               freeRankWins={freeRankWins}
               freeRankLosses={freeRankLosses}
             />
-            <GameRecord />
+            <GameRecord puuid={puuid} API_KEY={API_KEY}/>
           </>
         )}
       </div>

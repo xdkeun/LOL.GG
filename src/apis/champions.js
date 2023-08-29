@@ -164,3 +164,5 @@ const champions = {
   "902": "Milio",
   "950": "Naafiri"
 }
+
+export default champions;
