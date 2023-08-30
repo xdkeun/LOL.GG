@@ -4,6 +4,7 @@ import item from "../assets/items/1018.png";
 import rune from "../assets/runes/8000.webp";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import downBlueIcon from "../assets/icon/icon-arrow-down-blue.svg";
 import downRedIcon from "../assets/icon/icon-arrow-down-red.svg";
 import champions from "../apis/champions";
@@ -17,13 +18,62 @@ function importAll(r) {
 const championImages = importAll(
   require.context("../assets/champions", false, /\.(png|jpe?g|svg)$/)
 );
+
+const itemImages = importAll(
+  require.context("../assets/items", false, /\.(png|jpe?g|svg)$/)
+);
+
+const spellImages = importAll(
+  require.context("../assets/summonerSpells", false, /\.(png|jpe?g|svg)$/)
+);
+
+// 게임이 몇시간 몇분 몇초 지났는지 출력
+function formatGameDuration(durationInSeconds) {
+  const hours = Math.floor(durationInSeconds / 3600);
+  const minutes = Math.floor((durationInSeconds % 3600) / 60);
+  const seconds = durationInSeconds % 60;
+
+  let formattedDuration = "";
+
+  if (hours > 0) {
+    formattedDuration += `${hours}시간 `;
+  }
+
+  if (minutes > 0) {
+    formattedDuration += `${minutes}분 `;
+  }
+
+  formattedDuration += `${seconds}초`;
+
+  return formattedDuration.trim();
+}
+
+// 게임 끝난 시간(timestamp) 값이 매개변수로 들어오면 현재 시간과 비교하여, 얼마나 지났는지 출력 ex)1시간 전, 5분 전, 15일 전
+function getTimeAgo(timestamp) {
+  const currentTime = new Date().getTime();
+  const timeDifference = currentTime - timestamp;
+
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (timeDifference < minute) {
+    return `${Math.floor(timeDifference / 1000)}초 전`;
+  } else if (timeDifference < hour) {
+    return `${Math.floor(timeDifference / minute)}분 전`;
+  } else if (timeDifference < day) {
+    return `${Math.floor(timeDifference / hour)}시간 전`;
+  } else {
+    return `${Math.floor(timeDifference / day)}일 전`;
+  }
+}
+
 function GameRecord({ puuid, API_KEY }) {
   const [matches, setMatches] = useState([]); // matches 배열로 응답을 저장
-
   useEffect(() => {
     axios
       .get(
-        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=3&api_key=${API_KEY}`
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${API_KEY}`
       )
       .then(function (response) {
         const matchIds = response.data;
@@ -49,73 +99,165 @@ function GameRecord({ puuid, API_KEY }) {
   return (
     <GameRecordContent>
       {matches.map((match, index) => (
-        <GameRecordArticle key={index}>
+        <GameRecordArticle
+          key={index}
+          style={{
+            backgroundColor: match.info.participants.some(
+              (participant) =>
+                puuid === participant.puuid && participant.win === true
+            )
+              ? "#86a7ef" // 승리했을 시
+              : "#f4a4af", // 패배했을 시
+          }}
+        >
           <GameRecordType>
-            <p style={{ fontWeight: "500", color: "black" }}>솔랭</p>
+            <p style={{ fontWeight: "500", color: "black" }}>
+              {match.info.gameMode === "ARAM"
+                ? "무작위 총력전"
+                : match.info.gameMode}
+            </p>
             <p
               style={{
                 paddingBottom: "5px",
                 borderBottom: "0.5px solid rgba(0,0,0,0.7)",
               }}
             >
-              하루 전
+              {getTimeAgo(match.info.gameEndTimestamp)}
             </p>
-            <p>패배</p>
-            <p>15분 57초</p>
+            {match.info.participants.map((participant, index) =>
+              puuid === participant.puuid ? (
+                participant.win === true ? (
+                  <p>승리</p>
+                ) : (
+                  <p>패배</p>
+                )
+              ) : null
+            )}
+            <p>{formatGameDuration(match.info.gameDuration)}</p>
           </GameRecordType>
+          {match.info.participants.map((participant, index) =>
+            puuid == participant.puuid ? (
+              <GameRecordInfo key={index}>
+                <GameRecordInfoTop>
+                  <GameRecordInfoImgWrapper>
+                    <GameRecordInfoImg
+                      src={
+                        championImages[
+                          `${champions[participant.championId]}.png`
+                        ]
+                      }
+                      alt={participant.championName}
+                    />
+                    <GameRecordInfoLevel>
+                      {participant.champLevel}
+                    </GameRecordInfoLevel>
+                  </GameRecordInfoImgWrapper>
+                  <GameRecordInfoRuneSpellWrapper>
+                    <GameRecordInfoRuneSpellImg
+                      src={spellImages[`${participant.summoner1Id}.png`]}
+                      alt=""
+                    />
+                    <GameRecordInfoRuneSpellImg
+                      src={spellImages[`${participant.summoner2Id}.png`]}
+                      alt=""
+                    />
+                  </GameRecordInfoRuneSpellWrapper>
+                  <GameRecordInfoRuneSpellWrapper>
+                    <GameRecordInfoRuneSpellImg src={rune} alt="" />
+                    <GameRecordInfoRuneSpellImg src={rune} alt="" />
+                  </GameRecordInfoRuneSpellWrapper>
+                  <GameRecordInfoKDAWrapper>
+                    <GameRecordInfoKDA>
+                      {participant.kills}/{participant.deaths}/
+                      {participant.assists}
+                    </GameRecordInfoKDA>
+                    <GameRecordInfoRatio
+                      style={{ color: "red", fontWeight: "600" }}
+                    >
+                      {participant.deaths === 0 ? (
+                        "Perfect"
+                      ) : (
+                        <span
+                          style={{
+                            color:
+                              (participant.kills + participant.assists) /
+                                participant.deaths >=
+                              4
+                                ? "#cc4444"
+                                : (participant.kills + participant.assists) /
+                                    participant.deaths >=
+                                  3
+                                ? "#4444cc" // 3 이상인 경우
+                                : (participant.kills + participant.assists) /
+                                    participant.deaths >=
+                                  2
+                                ? "#449944" // 2 이상인 경우
+                                : "#808080", // 그 외
+                          }}
+                        >
+                          {(
+                            (participant.kills + participant.assists) /
+                            participant.deaths
+                          ).toFixed(2)}{" "}
+                          평점
+                        </span>
+                      )}
+                    </GameRecordInfoRatio>
+                  </GameRecordInfoKDAWrapper>
+                  <GameRecordInfoStatsWrapper>
+                    <KillRate>킬관여</KillRate>
+                    <InfoStats>
+                      제어와드 {participant.visionWardsBoughtInGame}
+                    </InfoStats>
+                    <InfoStats>시야점수 {participant.visionScore}</InfoStats>
+                    <InfoStats>
+                      CS{" "}
+                      {participant.neutralMinionsKilled +
+                        participant.totalEnemyJungleMinionsKilled +
+                        participant.totalMinionsKilled}{" "}
+                      (
+                      {(
+                        (participant.neutralMinionsKilled +
+                          participant.totalEnemyJungleMinionsKilled +
+                          participant.totalMinionsKilled) /
+                        (match.info.gameDuration / 60)
+                      ).toFixed(1)}
+                      )
+                    </InfoStats>
+                  </GameRecordInfoStatsWrapper>
+                </GameRecordInfoTop>
+                <GameRecordInfoBottom>
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <GameRecordInfoItemImg
+                      key={i}
+                      src={itemImages[`${participant[`item${i}`]}.png`]}
+                      alt=""
+                    />
+                  ))}
+                  {participant.pentaKills > 0 && <KillBadge>펜타킬</KillBadge>}
 
-          <GameRecordInfo>
-            <GameRecordInfoTop>
-              <GameRecordInfoImgWrapper>
-                <GameRecordInfoImg src="" alt="챔피언 사진" />
-                <GameRecordInfoLevel>18</GameRecordInfoLevel>
-              </GameRecordInfoImgWrapper>
-              <GameRecordInfoRuneSpellWrapper>
-                <GameRecordInfoRuneSpellImg src={spell} alt="" />
-                <GameRecordInfoRuneSpellImg src={spell} alt="" />
-              </GameRecordInfoRuneSpellWrapper>
-              <GameRecordInfoRuneSpellWrapper>
-                <GameRecordInfoRuneSpellImg src={rune} alt="" />
-                <GameRecordInfoRuneSpellImg src={rune} alt="" />
-              </GameRecordInfoRuneSpellWrapper>
-              <GameRecordInfoKDAWrapper>
-                <GameRecordInfoKDA>9/9/13</GameRecordInfoKDA>
-                <GameRecordInfoRatio>평점 2.44</GameRecordInfoRatio>
-              </GameRecordInfoKDAWrapper>
-              <GameRecordInfoStatsWrapper>
-                <KillRate>킬관여 50%</KillRate>
-                <InfoStats>제어와드 2</InfoStats>
-                <InfoStats>CS 250 (7.8)</InfoStats>
-                <InfoStats>Platinum 2</InfoStats>
-              </GameRecordInfoStatsWrapper>
-            </GameRecordInfoTop>
-            <GameRecordInfoBottom>
-              <GameRecordInfoItemImg src={item} alt="" />
-              <GameRecordInfoItemImg src={item} alt="" />
-              <GameRecordInfoItemImg src={item} alt="" />
-              <GameRecordInfoItemImg src={item} alt="" />
-              <GameRecordInfoItemImg src={item} alt="" />
-              <GameRecordInfoItemImg src={item} alt="" />
-              <p
-                style={{
-                  backgroundColor: "#e84057",
-                  color: "white",
-                  borderRadius: "25px",
-                  fontSize: "12px",
-                  padding: "4px 8px",
-                  margin: "0 4px",
-                }}
-              >
-                트리플킬
-              </p>
-            </GameRecordInfoBottom>
-          </GameRecordInfo>
+                  {participant.quadraKills > 0 && (
+                    <KillBadge>쿼드라킬</KillBadge>
+                  )}
+
+                  {participant.tripleKills > 0 && (
+                    <KillBadge>트리플킬</KillBadge>
+                  )}
+
+                  {participant.doubleKills > 0 && <KillBadge>더블킬</KillBadge>}
+                </GameRecordInfoBottom>
+              </GameRecordInfo>
+            ) : null
+          )}
 
           <GameRecordParticipants>
             <GameRecordTeams>
               {match.info.participants.map((participant) =>
                 participant.teamId === 100 ? (
-                  <TeamInfo key={participant.summonerId}>
+                  <TeamInfo
+                    key={participant.summonerId}
+                    to={`/find/${participant.summonerName}`}
+                  >
                     <TeamImg
                       src={
                         championImages[
@@ -132,7 +274,10 @@ function GameRecord({ puuid, API_KEY }) {
             <GameRecordTeams>
               {match.info.participants.map((participant) =>
                 participant.teamId === 200 ? (
-                  <TeamInfo key={participant.summonerId}>
+                  <TeamInfo
+                    key={participant.summonerId}
+                    to={`/find/${participant.summonerName}`}
+                  >
                     <TeamImg
                       src={
                         championImages[
@@ -170,8 +315,6 @@ const GameRecordArticle = styled.article`
   box-sizing: border-box;
   padding: 12px;
   border-radius: 20px;
-  background-color: #f4a4af; //패배 시
-  /* background-color:#86a7ef; //승리 시 */
 `;
 
 const GameRecordType = styled.div`
@@ -240,7 +383,7 @@ const GameRecordInfoKDA = styled.span`
 `;
 
 const GameRecordInfoRatio = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: rgba(0, 0, 0, 0.3);
 `;
 
@@ -260,6 +403,15 @@ const KillRate = styled.div`
 
 const InfoStats = styled.div`
   height: 13.5px;
+`;
+
+const KillBadge = styled.p`
+  background-color: #e84057;
+  color: white;
+  border-radius: 25px;
+  font-size: 12px;
+  padding: 4px 8px;
+  margin: 0 4px;
 `;
 const GameRecordInfoBottom = styled.div`
   display: flex;
@@ -288,9 +440,10 @@ const GameRecordTeams = styled.div`
   width: 180px;
 `;
 
-const TeamInfo = styled.div`
+const TeamInfo = styled(Link)`
   display: flex;
   height: 100%;
+  cursor: pointer;
 `;
 
 const TeamImg = styled.img`
