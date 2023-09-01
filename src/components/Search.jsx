@@ -1,3 +1,4 @@
+//소환사 검색 인풋 컴포넌트
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";

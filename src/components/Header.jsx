@@ -1,3 +1,4 @@
+//헤더 컴포넌트(로고, 챔피언, 랭킹, 친구, 로테이션, 게시판)
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useTheme } from "../context/ThemeContext";

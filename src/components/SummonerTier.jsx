@@ -1,3 +1,4 @@
+//검색한 소환사의 솔로랭크 티어, 자유랭크 티어 컴포넌트
 import styled from "styled-components";
 function importAll(r) {
   let images = {};

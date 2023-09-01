@@ -100,7 +100,13 @@ function FindPage() {
           </div>
         ) : (
           <>
-            <SummonerInfo name={name} level={level} icon={icon} />
+            <SummonerInfo
+              name={name}
+              level={level}
+              icon={icon}
+              soloRankPoint={soloRankPoint}
+              freeRankPoint={freeRankPoint}
+            />
             <SummonerTier
               soloRankTier={soloRankTier}
               soloRank={soloRank}
@@ -113,7 +119,7 @@ function FindPage() {
               freeRankWins={freeRankWins}
               freeRankLosses={freeRankLosses}
             />
-            <GameRecord puuid={puuid} API_KEY={API_KEY}/>
+            <GameRecord puuid={puuid} API_KEY={API_KEY} />
           </>
         )}
       </div>

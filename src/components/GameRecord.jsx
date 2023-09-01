@@ -1,7 +1,5 @@
+//
 import styled from "styled-components";
-import spell from "../assets/summonerSpells/4.png";
-import item from "../assets/items/1018.png";
-import rune from "../assets/runes/8000.webp";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -162,10 +160,6 @@ function GameRecord({ puuid, API_KEY }) {
                       alt=""
                     />
                   </GameRecordInfoRuneSpellWrapper>
-                  <GameRecordInfoRuneSpellWrapper>
-                    <GameRecordInfoRuneSpellImg src={rune} alt="" />
-                    <GameRecordInfoRuneSpellImg src={rune} alt="" />
-                  </GameRecordInfoRuneSpellWrapper>
                   <GameRecordInfoKDAWrapper>
                     <GameRecordInfoKDA>
                       {participant.kills}/{participant.deaths}/
@@ -205,7 +199,9 @@ function GameRecord({ puuid, API_KEY }) {
                     </GameRecordInfoRatio>
                   </GameRecordInfoKDAWrapper>
                   <GameRecordInfoStatsWrapper>
-                    <KillRate>킬관여</KillRate>
+                    <KillRate>
+                      킬관여 {participant.kills + participant.assists}
+                    </KillRate>
                     <InfoStats>
                       제어와드 {participant.visionWardsBoughtInGame}
                     </InfoStats>
