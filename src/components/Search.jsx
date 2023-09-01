@@ -11,6 +11,9 @@ function Search(props) {
   }
   const navigate = useNavigate();
   function findSubmit() {
+    if(search.length === 2){
+      setSearch(search.split('').join(' '))
+    }
     navigate(`/find/${search}`);
   }
   function searchKeyDownHandler(e) {
