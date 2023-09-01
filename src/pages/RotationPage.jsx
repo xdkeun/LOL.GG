@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Rotation from "../components/Rotation";
+import FixToIndex from "../components/FixToIndex";
 
 function RotationPage() {
   //일반 사용자(11레벨 이상) 로테이션
@@ -31,6 +32,7 @@ function RotationPage() {
     <div>
       <Header />
       <div style={{ padding: "20px" }}>
+        <FixToIndex/>
         <Rotation
           rotationChampionIds={rotationChampionIds}
           rotationChampionIdsForNewPlayers={rotationChampionIdsForNewPlayers}

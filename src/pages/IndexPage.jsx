@@ -1,5 +1,4 @@
 import Header from "../components/Header";
-import Loading from "../components/Loading";
 import Search from "../components/Search";
 import styled from "styled-components";
 function IndexPage() {
