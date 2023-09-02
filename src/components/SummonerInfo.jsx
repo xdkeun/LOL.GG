@@ -40,13 +40,13 @@ function SummonerInfo({ name, level, icon, soloRankPoint, freeRankPoint }) {
           >
             친구 등록하기
           </button>
-          {soloRankPoint >= 75 ? (
+          {soloRankPoint >= 75 && soloRankPoint < 100 ? (
             <RankWarningMessage status="솔로랭크 승급 임박" />
           ) : soloRankPoint === 0 ? (
             <RankWarningMessage status="솔로랭크 강등 임박" />
           ) : null}
 
-          {freeRankPoint >= 75 ? (
+          {freeRankPoint >= 75 && freeRankPoint < 100 ? (
             <RankWarningMessage status="자유랭크 승급 임박" />
           ) : freeRankPoint === 0 ? (
             <RankWarningMessage status="자유랭크 강등 임박" />

@@ -6,6 +6,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import FindPage from "./pages/FindPage";
 import RotationPage from "./pages/RotationPage";
+import RankingPage from "./pages/RankingPage";
 const theme = {
   colors: {
     background: "#318eef",
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<IndexPage />} />
           <Route path="/find/:param" element={<FindPage />} />
           <Route path="/rotation" element={<RotationPage />} />
+          <Route path="/ranking" element={<RankingPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
