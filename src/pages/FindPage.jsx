@@ -88,24 +88,13 @@ function FindPage() {
       <Header />
       <div style={{ padding: "20px" }}>
         <Search />
-        {name === "" ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "50px",
-            }}
-          >
-            <Loading />
-          </div>
-        ) : (
-          <>
             <SummonerInfo
               name={name}
               level={level}
               icon={icon}
               soloRankPoint={soloRankPoint}
               freeRankPoint={freeRankPoint}
+              id={id}
             />
             <SummonerTier
               soloRankTier={soloRankTier}
@@ -120,8 +109,6 @@ function FindPage() {
               freeRankLosses={freeRankLosses}
             />
             <GameRecord puuid={puuid} API_KEY={API_KEY} />
-          </>
-        )}
       </div>
     </div>
   );

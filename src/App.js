@@ -7,6 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import FindPage from "./pages/FindPage";
 import RotationPage from "./pages/RotationPage";
 import RankingPage from "./pages/RankingPage";
+import FriendsPage from "./pages/FriendsPage";
 const theme = {
   colors: {
     background: "#318eef",
@@ -23,6 +24,7 @@ function App() {
           <Route path="/find/:param" element={<FindPage />} />
           <Route path="/rotation" element={<RotationPage />} />
           <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/friends" element={<FriendsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

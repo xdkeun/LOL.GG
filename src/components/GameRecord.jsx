@@ -96,9 +96,9 @@ function GameRecord({ puuid, API_KEY }) {
   }, [puuid, API_KEY]);
   return (
     <GameRecordContent>
-      {matches.map((match, index) => (
+      {matches.map((match) => (
         <GameRecordArticle
-          key={index}
+          key={match.info.gameId}
           style={{
             backgroundColor: match.info.participants.some(
               (participant) =>
