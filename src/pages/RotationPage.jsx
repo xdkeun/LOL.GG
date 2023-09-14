@@ -33,7 +33,7 @@ function RotationPage() {
     <div>
       <Header />
       <div style={{ padding: "20px" }}>
-        <FixToIndex/>
+        <FixToIndex page="Rotation"/>
         <Rotation
           rotationChampionIds={rotationChampionIds}
           rotationChampionIdsForNewPlayers={rotationChampionIdsForNewPlayers}

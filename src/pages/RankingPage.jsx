@@ -10,7 +10,7 @@ function RankingPage() {
       <div style={{ margin: "20px" }}>
         <Search />
         <div style={{ margin: "10px 0" }}>
-          <FixToIndex />
+          <FixToIndex page="Ranking"/>
         </div>
         <Ranking />
       </div>

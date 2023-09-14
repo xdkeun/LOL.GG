@@ -124,4 +124,5 @@ const FriendDeleteButton = styled.button`
   padding: 5px 0;
   margin-top: 20px;
 `;
+
 export default Friends;

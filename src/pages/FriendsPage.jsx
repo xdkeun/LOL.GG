@@ -36,7 +36,7 @@ function FriendsPage() {
     <div>
       <Header />
       <div style={{margin:"20px"}}>
-      <FixToIndex/>
+      <FixToIndex page="Friends"/>
       <Friends friends={friends} setFriends={setFriends}/>
       </div>
     </div>
